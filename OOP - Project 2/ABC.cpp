@@ -76,24 +76,45 @@ void ABC::Delete(int key) {
 	}
 	
 	if (p->st == NULL && p->dr == NULL) {	//nodul nu are fii
+		if (p == root) {
+			root = NULL;
+			nr_noduri--;
+			return;
+		}
+		if (q != NULL) {
+			if (q->st == p)
+				q->st = NULL;
+			else
+				q->dr = NULL;
+		}
 		delete p;
 		nr_noduri--;
 		return;
 	}
 	else if (p->st == NULL) {		//are doar fiu drept	
-		if (q->st != NULL && q->st->info == key)
+		if (q->st != NULL && q->st->info == key) {
 			q->st = p->dr;
-		else if (q->dr != NULL && q->dr->info == key)
+		}
+		else if (q->dr != NULL && q->dr->info == key) {
 			q->dr = p->dr;
+		}
+		else {
+			root = root->dr;	// p = q = root
+		}
 		delete p;
 		nr_noduri--;
 		return;
 	}
 	else if (p->dr == NULL) {		// are doar fiu stang
-		if (q->st != NULL && q->st->info == key)
+		if (q->st != NULL && q->st->info == key) {
 			q->st = p->st;
-		else if (q->dr != NULL && q->dr->info == key)
+		}
+		else if (q->dr != NULL && q->dr->info == key) {
 			q->dr = p->st;
+		}
+		else {
+			root = root->st;		// p = q = root
+		}
 		delete p;
 		nr_noduri--;
 		return;
@@ -108,13 +129,34 @@ void ABC::Delete(int key) {
 			replace = replace->dr;
 			ok = 1;			//intra cel putin o data in while
 		}
-		if (replace->st != NULL)
+		if (!ok) {		// trail->st->dr == NULL
+			if (root == p) {
+				root->info = replace->info;
+				root->st = replace->st;
+				delete replace;
+				nr_noduri--;
+				return;
+			}
+			else {
+				if (q->dr && q->dr->info == p->info)
+					q->dr = replace;
+				else if(q->st && q->st->info == p->info)
+					q->st = replace;
+				replace->dr = p->dr;
+				delete p;
+				nr_noduri--;
+				return;
+			}
+		}
+		if (replace->st != NULL) {
 			if (ok)
 				trail->dr = replace->st;
 			else
 				trail->st = replace->st;
+		}	
 		p->info = replace->info;
 		delete replace;
+		trail->dr = NULL;
 		nr_noduri--;
 		return;
 	}
