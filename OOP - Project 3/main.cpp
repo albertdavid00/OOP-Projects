@@ -6,11 +6,12 @@ using namespace std;
 
 /*
 	Examen-> Partial
-	      -> Final
-	      -> Quiz
+		  -> Final
+		  -> Quiz
 	Catalog_Individual<T>
 	Catalog_Individual<Quiz>
 */
+
 
 // ------------------------------------------------------- EXAMEN -------------------------------------------------
 
@@ -374,7 +375,7 @@ class Catalog_Individual<Quiz> {
 	string nume_student;
 	int nr_examene;
 	vector<Quiz> examene;
-	static int nr_persoane;		
+	static int nr_persoane;
 public:
 	Catalog_Individual();
 	Catalog_Individual(vector<Quiz>, int = 0, string = "");
@@ -388,7 +389,7 @@ public:
 		cout << "\nNume: ";
 		try {
 			string nume;
-			getline(in, nume);			
+			getline(in, nume);
 			for (unsigned i = 0; i < nume.length(); i++)
 				if (nume[i] != ' ')
 					if (nume[i] < 'A' || nume[i] > 'z' || (nume[i] > 'Z' && nume[i] < 'a'))
@@ -536,10 +537,15 @@ void menu()
 							cin >> *p;
 							exams.push_back(p);
 						}
+						else throw 10;
 					}
 					catch (bad_alloc&) {
 						cout << "Allocation Failure!";
 						exit(EXIT_FAILURE);
+					}
+					catch (int) {
+						cout << "Optiune invalida.";
+						exit(1);
 					}
 				}
 				cin.get();
@@ -584,10 +590,15 @@ void menu()
 							cin >> *p;
 							exams.push_back(p);
 						}
+						else throw 10;
 					}
 					catch (bad_alloc&) {
 						cout << "Allocation Failure!";
 						exit(EXIT_FAILURE);
+					}
+					catch (int) {
+						cout << "Optiune invalida.";
+						exit(1);
 					}
 				}
 				cin.get();
@@ -613,7 +624,7 @@ void menu()
 								}
 							}
 							catch (int) {
-								cout << "Raspunsul dat este incorect!";
+								cout << "Optiune invalida.";
 								exit(1);
 							}
 						}
@@ -660,6 +671,11 @@ void menu()
 			}
 			cout.fill(' ');
 		}
+		else {
+			cout << "\nOptiune invalida.\n";
+		}
+		Student.clear();
+		Elev.clear();
 		system("pause");
 		system("cls");
 	} while (optiune != 0);
