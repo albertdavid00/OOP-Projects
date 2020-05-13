@@ -6,8 +6,8 @@ using namespace std;
 
 /*
 	Examen-> Partial
-		  -> Final
-		  -> Quiz
+	      -> Final
+	      -> Quiz
 	Catalog_Individual<T>
 	Catalog_Individual<Quiz>
 */
@@ -374,7 +374,7 @@ class Catalog_Individual<Quiz> {
 	string nume_student;
 	int nr_examene;
 	vector<Quiz> examene;
-	static int nr_persoane;		// care au cel putin 2 quiz-uri
+	static int nr_persoane;		
 public:
 	Catalog_Individual();
 	Catalog_Individual(vector<Quiz>, int = 0, string = "");
@@ -388,7 +388,7 @@ public:
 		cout << "\nNume: ";
 		try {
 			string nume;
-			getline(in, nume);			//pot face un try-catch pt ca numele sa nu contina cifre sau chestii de genul
+			getline(in, nume);			
 			for (unsigned i = 0; i < nume.length(); i++)
 				if (nume[i] != ' ')
 					if (nume[i] < 'A' || nume[i] > 'z' || (nume[i] > 'Z' && nume[i] < 'a'))
@@ -591,7 +591,6 @@ void menu()
 					}
 				}
 				cin.get();
-				//-- pana aici poate o fac functie 
 				for (int k = 0; k < exams.size(); k++) {
 					if (Partial* q = dynamic_cast<Partial*>(exams[k])) {
 						if (q->get_nota() < 5) {
