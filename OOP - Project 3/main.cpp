@@ -49,11 +49,12 @@ Examen::Examen(const Examen& E) {
 	contor_examen++;
 	materie = E.materie;
 	nota_scris = E.nota_scris;
-	id_examen = contor_examen;
+	id_examen = E.id_examen;
 }
 Examen::~Examen() {
 	materie = "";
 	nota_scris = 0;
+	--contor_examen;
 }
 Examen& Examen::operator=(const Examen& E) {
 	if (this != &E) {
@@ -263,9 +264,9 @@ public:
 	Catalog_Individual(const Catalog_Individual&);
 	string get_nume() { return nume_student; }
 	~Catalog_Individual();
+	void Delete();
 	Catalog_Individual<T>& operator=(const Catalog_Individual<T>&);
 	Catalog_Individual<T> operator+=(const Catalog_Individual<T>&);
-	static void Decrease() { contor--; }
 	int get_nr() { return nr_examene; }
 	void citire(istream& in) {
 		cout << "\nNume: ";
@@ -327,8 +328,9 @@ Catalog_Individual<T>::Catalog_Individual(vector<T> e, int nr, string nume) {
 	contor++;
 	id_student = contor;
 	examene.resize(e.size());
-	for (unsigned i = 0; i < e.size(); i++)
+	for (unsigned i = 0; i < e.size(); i++) {
 		examene[i] = e[i];
+	}
 }
 template <typename T>
 Catalog_Individual<T>::Catalog_Individual(const Catalog_Individual& C) {
@@ -346,7 +348,16 @@ Catalog_Individual<T>::~Catalog_Individual() {
 	nr_examene = 0;
 	id_student = 0;
 	nume_student = "";
+	contor--;
 }
+
+template<typename T>
+void Catalog_Individual<T>::Delete() {
+	for (int i = 0; i < nr_examene; i++)
+		delete examene[i];
+	return;
+}
+
 template <typename T>
 Catalog_Individual<T>& Catalog_Individual<T>::operator=(const Catalog_Individual& C) {
 	if (this != &C) {
@@ -502,7 +513,7 @@ void menu_output()
 void menu()
 {
 	vector<Catalog_Individual<Examen*>>Student;
-	vector<Catalog_Individual<Quiz>>Elev;
+	vector<Catalog_Individual<Quiz>>Elev;	// specializare quiz
 	int optiune = 0, n;
 	do {
 		menu_output();
@@ -550,14 +561,16 @@ void menu()
 				}
 				cin.get();
 				Catalog_Individual<Examen*> Auxiliar(exams, Student[i].get_nr());
-				Catalog_Individual<Examen*>::Decrease();
-				Student[i] += Auxiliar;
+				Student[i] += Auxiliar;			// folosesc operatorul += pentru a adauga examenele
 			}
 			cout.width(20);
 			cout.fill('=');
 			cout << "\n";
 			for (int i = 0; i < n; i++) {
 				cout << Student[i] << "\n";
+			}
+			for (int i = 0; i < n; i++) {
+				Student[i].Delete();
 			}
 			cout.fill(' ');
 		}
@@ -631,7 +644,6 @@ void menu()
 					}
 				}
 				Catalog_Individual<Examen*> Auxiliar(exams, Student[i].get_nr());
-				Catalog_Individual<Examen*>::Decrease();
 				Student[i] += Auxiliar;
 
 			}
@@ -640,6 +652,9 @@ void menu()
 			cout << "\n";
 			for (int i = 0; i < n; i++) {
 				cout << Student[i] << "\n";
+			}
+			for (int i = 0; i < n; i++) {
+				Student[i].Delete();
 			}
 			cout.fill(' ');
 		}
@@ -672,7 +687,8 @@ void menu()
 			cout.fill(' ');
 		}
 		else {
-			cout << "\nOptiune invalida.\n";
+			if(optiune != 0)
+				cout << "\nOptiune invalida.\n";
 		}
 		Student.clear();
 		Elev.clear();
